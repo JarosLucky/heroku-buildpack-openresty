@@ -4,7 +4,7 @@
 # Fail fast and fail hard.
 set -eo pipefail
 
-OPENRESTY_VERSION=1.7.7.2
+OPENRESTY_VERSION=1.11.2.4
 LUAROCKS_VERSION=2.2.0
 # It's too hard to handle all the variants of the LuaJIT version...
 
@@ -40,28 +40,45 @@ ln -s $BUILD_DIR/tools $TOOLS_DIR
 
 # Download, build and install OpenResty
 
-if [ ! -d "$CACHE_DIR/ngx_openresty-$OPENRESTY_VERSION" ]; then
+if [ ! -d "$CACHE_DIR/openresty-$OPENRESTY_VERSION" ]; then
   cd $CACHE_DIR
+  echo "Filling CACHE_DIR = '$CACHE_DIR'"
+  echo $CACHE_DIR >CACHE_DIR_NAME
   echo "-----> Building openresty $OPENRESTY_VERSION"
-  wget -O - http://openresty.org/download/ngx_openresty-$OPENRESTY_VERSION.tar.gz | tar xz
-  cd ngx_openresty-$OPENRESTY_VERSION
+  wget -O - http://openresty.org/download/openresty-$OPENRESTY_VERSION.tar.gz | tar xz
+  cd openresty-$OPENRESTY_VERSION
   PATH=$PATH:/sbin ./configure --prefix=$TOOLS_DIR/openresty --with-pcre-jit --with-ipv6
   make
+  echo "-----> Save Makefiles"
+  tar cf openresty-makefile-save.tar `find . -name Makefile`
   cd ..
 fi
+
+echo "-----> Restore Makefiles"
+tar -C $CACHE_DIR/openresty-$OPENRESTY_VERSION -xf $CACHE_DIR/openresty-$OPENRESTY_VERSION/openresty-makefile-save.tar
+echo "-----> CACHE_DIR = '$CACHE_DIR'"
+OLD_CACHE_DIR=`cat $CACHE_DIR/CACHE_DIR_NAME`
+echo "-----> OLD_CACHE_DIR = '$OLD_CACHE_DIR'"
+
+perl -i.bak -p -e "s'$OLD_CACHE_DIR'$CACHE_DIR'g" `find $CACHE_DIR/openresty-$OPENRESTY_VERSION -name Makefile`
+
 echo "-----> Installing openresty $OPENRESTY_VERSION"
-cd $CACHE_DIR/ngx_openresty-$OPENRESTY_VERSION
+cd $CACHE_DIR/openresty-$OPENRESTY_VERSION
 make install
 mkdir -p $BUILD_DIR/logs
 
 # Openresty puts its binaries in all sorts of awkward places.  To make things
 # easier, we just link them to somewhere more convenient.
 # Note that we rename libluajit a little.  I'm not sure why we have to do that
-ln -s $TOOLS_DIR/openresty/luajit/bin/luajit-2.1.0-alpha $TOOLS_DIR/bin/lua
-ln -s $TOOLS_DIR/openresty/luajit/lib/libluajit-5.1.so.2.1.0 $TOOLS_DIR/lib/libluajit-5.1.so.2
-ln -s $TOOLS_DIR/openresty/luajit/include/luajit-2.1 $TOOLS_DIR/include/luajit-2.1
-ln -s $TOOLS_DIR/openresty/nginx/sbin/nginx $TOOLS_DIR/bin/nginx
-
+echo "-----> Installing files in $TOOLS_DIR"
+ln -vs $TOOLS_DIR/openresty/luajit/bin/luajit $TOOLS_DIR/bin/lua
+ln -vs $TOOLS_DIR/openresty/luajit/bin/luajit $TOOLS_DIR/bin/
+ln -vs $TOOLS_DIR/openresty/luajit/lib/* $TOOLS_DIR/lib/
+ln -vs $TOOLS_DIR/lib/libluajit-5.1.so.2.1.0 $TOOLS_DIR/lib/libluajit-5.1.so.2
+ln -vs $TOOLS_DIR/openresty/luajit/include/luajit-2.1 $TOOLS_DIR/include/
+ln -vs $TOOLS_DIR/openresty/nginx/sbin/nginx $TOOLS_DIR/bin/
+ln -vs $TOOLS_DIR/openresty/bin/opm $TOOLS_DIR/bin/
+ln -vs $TOOLS_DIR/openresty/bin/resty $TOOLS_DIR/bin/
 
 # Download, build and install LuaRocks
 if [ ! -d "$CACHE_DIR/luarocks-$LUAROCKS_VERSION" ]; then
