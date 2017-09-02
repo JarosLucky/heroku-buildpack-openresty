@@ -39,7 +39,7 @@ ln -s $BUILD_DIR/tools $TOOLS_DIR
 
 # Download, build and install OpenResty
 
-if [ ! -d "$CACHE_DIR/openresty-$OPENRESTY_VERSION/openresty-makefile-save.tar" ]; then
+if [ ! -r "$CACHE_DIR/openresty-$OPENRESTY_VERSION/openresty-makefile-save.tar" ]; then
   cd $CACHE_DIR
   echo "Filling CACHE_DIR = '$CACHE_DIR'"
   echo $CACHE_DIR >CACHE_DIR_NAME
