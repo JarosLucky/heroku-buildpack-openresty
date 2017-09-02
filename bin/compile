@@ -24,7 +24,6 @@ echo "-----> Copying profile.d and tools"
 cp -r $ROOT_DIR/.profile.d $BUILD_DIR
 cp -r $ROOT_DIR/tools $BUILD_DIR
 
-
 # We build everything as we go, making in the cache directory, and then
 # installing into the build directory.
 # Unfortunately, the build directory is something like /tmp/build_XXX... and
@@ -40,7 +39,7 @@ ln -s $BUILD_DIR/tools $TOOLS_DIR
 
 # Download, build and install OpenResty
 
-if [ ! -d "$CACHE_DIR/openresty-$OPENRESTY_VERSION" ]; then
+if [ ! -d "$CACHE_DIR/openresty-$OPENRESTY_VERSION/openresty-makefile-save.tar" ]; then
   cd $CACHE_DIR
   echo "Filling CACHE_DIR = '$CACHE_DIR'"
   echo $CACHE_DIR >CACHE_DIR_NAME
