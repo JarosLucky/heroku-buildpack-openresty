@@ -120,3 +120,7 @@ if [ -f external_rocks.txt ]; then
     $TOOLS_DIR/bin/luarocks install $EXTERNAL_ROCK
   done < external_rocks.txt
 fi
+
+if [ -f Makefile ]; then
+        make heroku_build
+fi
