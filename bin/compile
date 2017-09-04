@@ -106,8 +106,8 @@ ROCKSPEC=$(ls | sed -n 's/\.rockspec$/&/p' | head -n 1)
 echo "-----> Installing dependencies"
 PATH=$TOOLS_DIR/bin:$PATH \
 LD_LIBRARY_PATH=$TOOLS_DIR/lib \
-LUA_PATH=$TOOLS_DIR/share/lua/5.1/?.lua;$TOOLS_DIR/share/lua/5.1/?/init.lua \
-LUA_CPATH=$TOOLS_DIR/lib/lua/5.1/?.so;$TOOLS_DIR/lib/lua/5.1/?/init.so \
+LUA_PATH="$TOOLS_DIR/share/lua/5.1/?.lua;$TOOLS_DIR/share/lua/5.1/?/init.lua" \
+LUA_CPATH="$TOOLS_DIR/lib/lua/5.1/?.so;$TOOLS_DIR/lib/lua/5.1/?/init.so" \
 $TOOLS_DIR/bin/luarocks make $ROCKSPEC
 
 if [ -f external_rocks.txt ]; then
@@ -115,8 +115,8 @@ if [ -f external_rocks.txt ]; then
   while read EXTERNAL_ROCK; do
     PATH=$TOOLS_DIR/bin:$PATH \
     LD_LIBRARY_PATH=$TOOLS_DIR/lib \
-    LUA_PATH=$TOOLS_DIR/share/lua/5.1/?.lua;$TOOLS_DIR/share/lua/5.1/?/init.lua \
-    LUA_CPATH=$TOOLS_DIR/lib/lua/5.1/?.so;$TOOLS_DIR/lib/lua/5.1/?/init.so \
+    LUA_PATH="$TOOLS_DIR/share/lua/5.1/?.lua;$TOOLS_DIR/share/lua/5.1/?/init.lua" \
+    LUA_CPATH="$TOOLS_DIR/lib/lua/5.1/?.so;$TOOLS_DIR/lib/lua/5.1/?/init.so" \
     $TOOLS_DIR/bin/luarocks install $EXTERNAL_ROCK
   done < external_rocks.txt
 fi
