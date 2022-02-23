@@ -73,6 +73,7 @@ echo "-----> Installing files in $TOOLS_DIR"
 ln -vs $TOOLS_DIR/openresty/luajit/bin/luajit $TOOLS_DIR/bin/lua
 ln -vs $TOOLS_DIR/openresty/luajit/bin/luajit $TOOLS_DIR/bin/
 ln -vs $TOOLS_DIR/openresty/luajit/lib/* $TOOLS_DIR/lib/
+ls $TOOLS_DIR/lib
 ln -vs $TOOLS_DIR/lib/libluajit-5.1.so.2.1.0 $TOOLS_DIR/lib/libluajit-5.1.so.2
 ln -vs $TOOLS_DIR/openresty/luajit/include/luajit-2.1 $TOOLS_DIR/include/
 ln -vs $TOOLS_DIR/openresty/nginx/sbin/nginx $TOOLS_DIR/bin/
